@@ -429,20 +429,25 @@ export default function ReviewsList({
   };
   
   if (loading) {
-    return <div className="flex justify-center p-8">Loading reviews...</div>;
+    return <div className="flex justify-center p-8 text-black">Loading reviews...<span className="ml-2 pulse">⟳</span></div>;
   }
   
   // Only show error if not hidden by parent component
   if (error && !hideError) {
     return (
-      <div className={`${useMockData ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-red-100 border-red-400 text-red-700'} border px-4 py-3 rounded mb-4`}>
+      <div className={`${useMockData ? 'glass border-blue-400/30 text-blue-700' : 'glass border-red-400/30 text-red-700'} border px-6 py-4 rounded-xl mb-6 shadow-lg`}>
         {useMockData ? (
           <div>
             {/* <p className="font-bold">Using Demo Data</p> */}
             {/* <p>The application is currently displaying demo data. {error}</p> */}
           </div>
         ) : (
-          <div>Error: {error}</div>
+          <div className="flex items-center">
+            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            Error: {error}
+          </div>
         )}
       </div>
     );
@@ -450,8 +455,14 @@ export default function ReviewsList({
   
   if (reviews.length === 0) {
     return (
-      <div className="p-8 text-center">
-        <p className="text-gray-600">No reviews found matching your filters.</p>
+      <div className="p-8 text-center glass-card">
+        <div className="py-12">
+          <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          <p className="text-gray-600 font-medium">No reviews found matching your filters.</p>
+          <p className="text-gray-500 mt-2">Try adjusting your filter criteria.</p>
+        </div>
       </div>
     );
   }
@@ -459,32 +470,32 @@ export default function ReviewsList({
   return (
     <div>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-gray-200/30 glass rounded-xl overflow-hidden">
+          <thead className="backdrop-blur-md bg-white/30">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Review
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Department
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Rating
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Date
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Type
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200/30">
             {reviews.map((review) => (
-              <tr key={review._id} className={review.isArchived ? 'bg-gray-50' : ''}>
+              <tr key={review._id} className={`transition-all duration-200 hover:bg-white/40 ${review.isArchived ? 'bg-gray-50/50' : ''}`}>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
                     <div className="text-sm font-medium text-gray-900">{review.title}</div>
@@ -523,14 +534,16 @@ export default function ReviewsList({
                       setSelectedReviewId(review._id);
                       setIsModalOpen(true);
                     }}
-                    className="text-indigo-600 hover:text-indigo-900 mr-3"
+                    className="text-indigo-600 hover:text-indigo-900 mr-3 px-3 py-1 rounded-md hover:bg-indigo-50/50 transition-all duration-200"
                   >
                     View
                   </button>
                   <button
                     onClick={() => handleArchiveToggle(review._id, review.isArchived)}
-                    className={`${
-                      review.isArchived ? 'text-green-600 hover:text-green-900' : 'text-gray-600 hover:text-gray-900'
+                    className={`px-3 py-1 rounded-md transition-all duration-200 ${
+                      review.isArchived 
+                        ? 'text-green-600 hover:text-green-900 hover:bg-green-50/50' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/50'
                     }`}
                   >
                     {review.isArchived ? 'Unarchive' : 'Archive'}
@@ -543,24 +556,30 @@ export default function ReviewsList({
       </div>
       
       {totalPages > 1 && (
-        <div className="p-4 border-t border-gray-200 flex justify-center">
-          <div className="flex space-x-1">
+        <div className="p-6 border-t border-gray-200/30 flex justify-center">
+          <div className="flex space-x-2 glass px-2 py-1 rounded-full">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 disabled:opacity-50"
+              className="px-4 py-2 rounded-full glass-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
             >
+              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
               Previous
             </button>
-            <span className="px-3 py-1">
+            <span className="px-4 py-2 flex items-center justify-center text-black font-medium">
               Page {page} of {totalPages}
             </span>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 disabled:opacity-50"
+              className="px-4 py-2 rounded-full glass-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
             >
               Next
+              <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </div>
@@ -568,23 +587,23 @@ export default function ReviewsList({
 
       {/* Review Detail Modal */}
       {isModalOpen && selectedReviewId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-black">Review Details</h2>
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300">
+          <div className="glass-modal w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-fadeIn">
+            <div className="p-5 border-b border-gray-200/30 flex justify-between items-center">
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent">Review Details</h2>
               <button 
                 onClick={() => {
                   setIsModalOpen(false);
                   setSelectedReviewId(null);
                 }}
-                className="text-gray-700 hover:text-black"
+                className="text-gray-700 hover:text-black hover:bg-gray-100/30 p-2 rounded-full transition-all duration-200"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="p-4 text-black">
+            <div className="p-6 text-black">
               <ReviewDetailClient reviewId={selectedReviewId} />
             </div>
           </div>
